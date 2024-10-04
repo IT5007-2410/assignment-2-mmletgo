@@ -12,18 +12,23 @@ const initialTravellers = [
 
 
 function TravellerRow(props) {
-  {/*Q3. Placeholder to initialize local variable based on traveller prop.*/}
+  {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
+  const traveller = props.traveller;
   return (
-    <tr>
-	  {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
+    <tr key={props.key}>
+      {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
+      <td>{traveller.id}</td>
+      <td>{traveller.name}</td>
+      <td>{traveller.phone}</td>
+      <td>{traveller.bookingTime.toDateString()}</td>
     </tr>
   );
 }
 
 function Display(props) {
   
-	/*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
-
+  /*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
+  const travellerRows = props.travellers.map(traveller => <TravellerRow key={traveller.id} traveller={traveller} />);
   return (
     <table className="bordered-table">
       <thead>
@@ -37,6 +42,7 @@ function Display(props) {
       </thead>
       <tbody>
         {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
+        {travellerRows}
       </tbody>
     </table>
   );
@@ -146,13 +152,12 @@ class TicketToRide extends React.Component {
           {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
           {this.state.selector === 1 && <Homepage />}
-          {this.state.selector === 2 && <Display />}
-          {this.state.selector === 3 && <Add />}
-          {this.state.selector === 4 && <Delete />}
           {/*Q3. Code to call component that Displays Travellers.*/}
-          
+          {this.state.selector === 2 && <Display travellers={initialTravellers} />}
           {/*Q4. Code to call the component that adds a traveller.*/}
+          {this.state.selector === 3 && <Add />}
           {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+          {this.state.selector === 4 && <Delete />}
         </div>
       </div>
     );
