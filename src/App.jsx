@@ -102,15 +102,39 @@ class Delete extends React.Component {
   }
 }
 
+function Seat(props) {
+  const seatid = props.seatid;
+  const seatStyle={
+    backgroundColor: props.occupiednum<seatid? 'green' : 'grey',
+  };
+  return (
+    <button style={seatStyle}>{seatid}</button>
+  );
+}
+
 class Homepage extends React.Component {
 	constructor() {
 	super();
-	}
+  }
+  renderSeat() {
+    const seatnum = 10;
+    const occupiednum = this.props.ordernum;
+    const seatlist = [];
+    for (let i = 1; i <= seatnum; i++) {
+      seatlist.push(<Seat key={i} seatid={i} occupiednum={occupiednum} />);
+    }
+    return seatlist;
+  }
 	render(){
 	return (
 	<div>
-		{/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-	</div>);
+      {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+      <h2>Free Seats</h2>
+      <div>
+        {this.renderSeat()}
+      </div>
+  </div>
+  );
 	}
 }
 class TicketToRide extends React.Component {
@@ -177,7 +201,7 @@ class TicketToRide extends React.Component {
         <div>
           {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-          {this.state.selector === 1 && <Homepage />}
+          {this.state.selector === 1 && <Homepage ordernum={this.state.travellers.length} />}
           {/*Q3. Code to call component that Displays Travellers.*/}
           {this.state.selector === 2 && <Display travellers={this.state.travellers} />}
           {/*Q4. Code to call the component that adds a traveller.*/}
