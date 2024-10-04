@@ -1,11 +1,11 @@
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
-    id: 1, name: 'Jack', phone: 88885555,
+    id: 1, name: 'Jack', identityId:"8555A", phone: 88885555, address: '1235 Main St',
     bookingTime: new Date(),
   },
   {
-    id: 2, name: 'Rose', phone: 88884444,
+    id: 2, name: 'Rose', identityId:"8556B", phone: 88884444, address: '1234 Main St',
     bookingTime: new Date(),
   },
 ];
@@ -19,8 +19,11 @@ function TravellerRow(props) {
       {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
       <td>{traveller.id}</td>
       <td>{traveller.name}</td>
+      <td>{traveller.identityId}</td>
       <td>{traveller.phone}</td>
+      <td>{traveller.address}</td>
       <td>{traveller.bookingTime.toDateString()}</td>
+      <td><button onClick={()=>props.deleteTraveller(traveller)}>Delete</button></td>
     </tr>
   );
 }
@@ -28,7 +31,7 @@ function TravellerRow(props) {
 function Display(props) {
   
   /*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
-  const travellerRows = props.travellers.map(traveller => <TravellerRow key={traveller.id} traveller={traveller} />);
+  const travellerRows = props.travellers.map(traveller => <TravellerRow key={traveller.id} traveller={traveller} deleteTraveller={props.deleteTraveller} />);
   return (
     <table className="bordered-table">
       <thead>
@@ -36,8 +39,11 @@ function Display(props) {
 	  {/*Q3. Below table is just an example. Add more columns based on the traveller attributes you choose.*/}
           <th>ID</th>
           <th>Name</th>
+          <th>IdentityId</th>
           <th>Phone</th>
+          <th>Address</th>
           <th>Booking Time</th>
+          <th>action</th>
         </tr>
       </thead>
       <tbody>
@@ -59,7 +65,10 @@ class Add extends React.Component {
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
     const form = document.forms.addTraveller;
     this.props.bookTraveller({
-      name: form.travellername.value, phone: form.phone.value,
+      name: form.travellername.value,
+      identityId: form.identityId.value,
+      phone: form.phone.value,
+      address: form.address.value,
       bookingTime: new Date(),
     });
   }
@@ -69,7 +78,9 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
+        <input type="text" name="identityId" placeholder="IdentityId" />
         <input type="number" name="phone" placeholder="phone" />
+        <input type="text" name="address" placeholder="address" />
         <button type="submit">Add</button>
       </form>
     );
@@ -87,7 +98,7 @@ class Delete extends React.Component {
     /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
     const form = document.forms.deleteTraveller;
     this.props.deleteTraveller({
-      name: form.travellername.value,
+      identityId: form.identityid.value,
     });
   }
 
@@ -95,7 +106,7 @@ class Delete extends React.Component {
     return (
       <form name="deleteTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
-        <input type="text" name="travellername" placeholder="Name" />
+        <input type="text" name="identityid" placeholder="identityId" />
         <button type="submit">Delete</button>
       </form>
     );
@@ -166,10 +177,16 @@ class TicketToRide extends React.Component {
     const newTravellers = this.state.travellers.slice();
     const lastTraveller = newTravellers[newTravellers.length - 1];
     const newId = lastTraveller ? lastTraveller.id + 1 : 1;
+    if (newTravellers.length >= 10){
+      alert("Sorry, all seats are occupied");
+      return;
+    }
     newTravellers.push({
       id: newId,
       name: passenger.name,
+      identityId: passenger.identityId,
       phone: passenger.phone,
+      address: passenger.address,
       bookingTime: passenger.bookingTime,
     });
     this.setState({ travellers: newTravellers });
@@ -178,7 +195,7 @@ class TicketToRide extends React.Component {
   deleteTraveller(passenger) {
     /*Q5. Write code to delete a passenger from the traveller state variable.*/
     const newTravellers = this.state.travellers.slice();
-    const index = newTravellers.findIndex(traveller => traveller.name === passenger.name);
+    const index = newTravellers.findIndex(traveller => traveller.identityId === passenger.identityId);
     if (index >= 0) {
       newTravellers.splice(index, 1);
       this.setState({ travellers: newTravellers });
@@ -203,7 +220,7 @@ class TicketToRide extends React.Component {
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
           {this.state.selector === 1 && <Homepage ordernum={this.state.travellers.length} />}
           {/*Q3. Code to call component that Displays Travellers.*/}
-          {this.state.selector === 2 && <Display travellers={this.state.travellers} />}
+          {this.state.selector === 2 && <Display travellers={this.state.travellers} deleteTraveller={this.deleteTraveller} />}
           {/*Q4. Code to call the component that adds a traveller.*/}
           {this.state.selector === 3 && <Add bookTraveller={this.bookTraveller} />}
           {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
