@@ -15,7 +15,7 @@ function TravellerRow(props) {
   {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
   const traveller = props.traveller;
   return (
-    <tr key={props.key}>
+    <tr>
       {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
       <td>{traveller.id}</td>
       <td>{traveller.name}</td>
@@ -57,6 +57,11 @@ class Add extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+    const form = document.forms.addTraveller;
+    this.props.bookTraveller({
+      name: form.travellername.value, phone: form.phone.value,
+      bookingTime: new Date(),
+    });
   }
 
   render() {
@@ -64,7 +69,8 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
-        <button>Add</button>
+        <input type="number" name="phone" placeholder="phone" />
+        <button type="submit">Add</button>
       </form>
     );
   }
@@ -128,7 +134,17 @@ class TicketToRide extends React.Component {
   }
 
   bookTraveller(passenger) {
-	    /*Q4. Write code to add a passenger to the traveller state variable.*/
+    /*Q4. Write code to add a passenger to the traveller state variable.*/
+    const newTravellers = this.state.travellers.slice();
+    const lastTraveller = newTravellers[newTravellers.length - 1];
+    const newId = lastTraveller ? lastTraveller.id + 1 : 1;
+    newTravellers.push({
+      id: newId,
+      name: passenger.name,
+      phone: passenger.phone,
+      bookingTime: passenger.bookingTime,
+    });
+    this.setState({ travellers: newTravellers });
   }
 
   deleteTraveller(passenger) {
@@ -153,9 +169,9 @@ class TicketToRide extends React.Component {
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
           {this.state.selector === 1 && <Homepage />}
           {/*Q3. Code to call component that Displays Travellers.*/}
-          {this.state.selector === 2 && <Display travellers={initialTravellers} />}
+          {this.state.selector === 2 && <Display travellers={this.state.travellers} />}
           {/*Q4. Code to call the component that adds a traveller.*/}
-          {this.state.selector === 3 && <Add />}
+          {this.state.selector === 3 && <Add bookTraveller={this.bookTraveller} />}
           {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
           {this.state.selector === 4 && <Delete />}
         </div>
