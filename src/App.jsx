@@ -78,7 +78,7 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
-        <input type="text" name="identityId" placeholder="IdentityId" />
+        <input type="text" name="identityId" placeholder="IdentityId*" required/>
         <input type="number" name="phone" placeholder="phone" />
         <input type="text" name="address" placeholder="address" />
         <button type="submit">Add</button>
@@ -106,7 +106,7 @@ class Delete extends React.Component {
     return (
       <form name="deleteTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
-        <input type="text" name="identityid" placeholder="identityId" />
+        <input type="text" name="identityid" placeholder="identityId*" required/>
         <button type="submit">Delete</button>
       </form>
     );
@@ -190,6 +190,7 @@ class TicketToRide extends React.Component {
       bookingTime: passenger.bookingTime,
     });
     this.setState({ travellers: newTravellers });
+    alert("Booking successful");
   }
 
   deleteTraveller(passenger) {
@@ -199,6 +200,10 @@ class TicketToRide extends React.Component {
     if (index >= 0) {
       newTravellers.splice(index, 1);
       this.setState({ travellers: newTravellers });
+      alert("Deletion successful");
+    }
+    else {
+      alert("Traveller not found");
     }
   }
   render() {
